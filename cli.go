@@ -118,7 +118,12 @@ func (n *Namespace) Run() error {
 		return err
 	}
 
-	fmt.Println(namespaces)
+	names := make([]string, 0, len(namespaces.Items))
+	for _, item := range namespaces.Items {
+		fmt.Println(item)
+		break
+	}
+	_ = names
 
 	return nil
 }
