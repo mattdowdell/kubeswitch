@@ -120,10 +120,9 @@ func (n *Namespace) Run() error {
 
 	names := make([]string, 0, len(namespaces.Items))
 	for _, item := range namespaces.Items {
-		fmt.Println(item)
-		break
+		names = append(names, item.Name)
 	}
-	_ = names
+	fmt.Println(names)
 
 	return nil
 }
