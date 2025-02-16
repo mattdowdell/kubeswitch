@@ -29,7 +29,7 @@ var (
 
 func newList(title string, items []string) list.Model {
 	//nolint:mnd // layout sizes
-	l := list.New(newItems(items), newDelegate(), 20 /*width*/, 10 /*height*/)
+	l := list.New(newItems(items), newDelegate(), 20 /*width*/, 30 /*height*/)
 
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(true)

@@ -28,12 +28,14 @@ type CLI struct {
 	Version kong.VersionFlag `short:"V" help:"Display the version."`
 }
 
+// ...
 type Switch struct {
 	Config    string `short:"k" name:"kubeconfig" env:"KUBECONFIG" default:"${kubeconfig}" help:"The kubeconfig file to use (env: ${env})."`
 	Context   string `short:"c" help:"The context to switch to."`
 	Namespace string `short:"n" help:"The namespace to switch to."`
 }
 
+// ...
 func (s *Switch) Run() error {
 	logger := newLogger()
 
@@ -60,11 +62,13 @@ func (s *Switch) Run() error {
 	return nil
 }
 
+// ...
 type Context struct {
 	Config  string `short:"k" name:"kubeconfig" env:"KUBECONFIG" default:"${kubeconfig}" help:"The kubeconfig file to use (env: ${env})."`
 	Context string `arg:"" optional:"" help:"The context to switch to."`
 }
 
+// ...
 func (c *Context) Run() error {
 	logger := newLogger()
 
@@ -91,11 +95,13 @@ func (c *Context) Run() error {
 	return nil
 }
 
+// ...
 type Namespace struct {
 	Config    string `short:"k" name:"kubeconfig" env:"KUBECONFIG" default:"${kubeconfig}" help:"The kubeconfig file to use (env: ${env})."`
 	Namespace string `arg:"" optional:""  help:"The namespace to switch to."`
 }
 
+// ...
 func (n *Namespace) Run() error {
 	logger := newLogger()
 
@@ -104,40 +110,30 @@ func (n *Namespace) Run() error {
 		return err
 	}
 
-	clientConf := clientcmd.NewDefaultClientConfig(*conf, &clientcmd.ConfigOverrides{})
-	restConf, err := clientConf.ClientConfig()
+	updated, err := updateNamespace(logger, conf, n.Namespace)
 	if err != nil {
 		return err
 	}
 
-	clientset, err := kubernetes.NewForConfig(restConf)
-	if err != nil {
+	if !updated {
+		logger.Info("skipped namespace update")
+		return nil
+	}
+
+	if err := saveConfig(conf, n.Config); err != nil {
 		return err
 	}
 
-	namespaces, err := clientset.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
-	if err != nil {
-		return err
-	}
-
-	names := make([]string, 0, len(namespaces.Items))
-	for _, item := range namespaces.Items {
-		names = append(names, item.Name)
-	}
-	slices.Sort(names)
-
-	name, err := chooseNamespace(logger, names)
-	if err != nil {
-		return err
-	}
-
-	logger.Info("selected namespace", "name", name)
-
+	logger.Info("updated with new namespace", "name", conf.Contexts[conf.CurrentContext].Namespace)
 	return nil
 }
 
 func parseConfig(path string) (*api.Config, error) {
 	return clientcmd.LoadFromFile(path)
+}
+
+func saveConfig(conf *api.Config, path string) error {
+	return clientcmd.WriteToFile(*conf, path)
 }
 
 func updateContext(logger *log.Logger, conf *api.Config, val string) (bool, error) {
@@ -171,8 +167,44 @@ func updateContext(logger *log.Logger, conf *api.Config, val string) (bool, erro
 	return true, nil
 }
 
-func saveConfig(conf *api.Config, path string) error {
-	return clientcmd.WriteToFile(*conf, path)
+func updateNamespace(logger *log.Logger, conf *api.Config, val string) (bool, error) {
+	clientConf := clientcmd.NewDefaultClientConfig(*conf, &clientcmd.ConfigOverrides{})
+	restConf, err := clientConf.ClientConfig()
+	if err != nil {
+		return false, err
+	}
+
+	clientset, err := kubernetes.NewForConfig(restConf)
+	if err != nil {
+		return false, err
+	}
+
+	// TODO: fix context
+	namespaces, err := clientset.CoreV1().Namespaces().List(context.TODO(), metav1.ListOptions{})
+	if err != nil {
+		return false, err
+	}
+
+	names := make([]string, 0, len(namespaces.Items))
+	for i := range namespaces.Items {
+		names = append(names, namespaces.Items[i].Name)
+	}
+	slices.Sort(names)
+
+	// TODO: use val if it's non-empty and valid
+	_ = val
+
+	name, err := chooseNamespace(logger, names)
+	if err != nil {
+		return false, err
+	}
+
+	if name == conf.Contexts[conf.CurrentContext].Namespace {
+		return false, nil
+	}
+
+	conf.Contexts[conf.CurrentContext].Namespace = name
+	return true, nil
 }
 
 func chooseContext(logger *log.Logger, names []string) (string, error) {
