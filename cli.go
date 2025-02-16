@@ -97,6 +97,8 @@ type Namespace struct {
 }
 
 func (n *Namespace) Run() error {
+	logger := newLogger()
+
 	conf, err := parseConfig(n.Config)
 	if err != nil {
 		return err
@@ -122,7 +124,14 @@ func (n *Namespace) Run() error {
 	for _, item := range namespaces.Items {
 		names = append(names, item.Name)
 	}
-	fmt.Println(names)
+	slices.Sort(names)
+
+	name, err := chooseNamespace(logger, names)
+	if err != nil {
+		return err
+	}
+
+	logger.Info("selected namespace", "name", name)
 
 	return nil
 }
@@ -185,6 +194,31 @@ func chooseContext(logger *log.Logger, names []string) (string, error) {
 		choice, ok := c.Choice()
 		if !ok {
 			return "", errors.New("no context chosen")
+		}
+
+		return choice, nil
+	}
+}
+
+func chooseNamespace(logger *log.Logger, names []string) (string, error) {
+	switch len(names) {
+	case 0:
+		return "", errors.New("no namespace to choose from")
+
+	case 1:
+		logger.Info("defaulting to the one available namespace", "name", names[0])
+		return names[0], nil
+
+	default:
+		c := chooser.New("Select a namespace:", names)
+
+		if _, err := tea.NewProgram(c, tea.WithAltScreen()).Run(); err != nil {
+			return "", fmt.Errorf("error running program: %w", err)
+		}
+
+		choice, ok := c.Choice()
+		if !ok {
+			return "", errors.New("no namespace chosen")
 		}
 
 		return choice, nil
