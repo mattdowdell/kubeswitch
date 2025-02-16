@@ -36,6 +36,7 @@ func (c *Chooser) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
 		c.list.SetWidth(msg.Width)
+		c.list.SetHeight(msg.Height) // TODO: reduce for padding, etc.?
 		return c, nil
 
 	case tea.KeyMsg:
