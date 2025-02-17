@@ -1,48 +1,30 @@
 package main
 
 import (
-	"fmt"
+	"context"
 	"os"
+	"os/signal"
 	"path/filepath"
-	"runtime"
-	"runtime/debug"
 
 	"github.com/alecthomas/kong"
-)
 
-const (
-	clientGoPath = "k8s.io/client-go"
+	"github.com/mattdowdell/kubeswitch/internal/cli"
+	"github.com/mattdowdell/kubeswitch/internal/version"
 )
 
 func main() {
-	ctx := kong.Parse(
-		&CLI{},
-		kong.Description("TODO"),
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+
+	k := kong.Parse(
+		&cli.CLI{},
+		kong.Description("Switch between kube contexts and namespaces."),
 		kong.Vars{
 			"kubeconfig": filepath.Join(os.Getenv("HOME"), ".kube", "config"),
-			"version":    version(), // TODO: k8s client version
+			"version":    version.Must().String(),
 		},
+		kong.BindTo(ctx, (*context.Context)(nil)),
 	)
-	ctx.FatalIfErrorf(ctx.Run())
-}
 
-func version() string {
-	info, _ := debug.ReadBuildInfo()
-	return fmt.Sprintf("%s (%s) (%s)", info.Main.Version, goVersion(), clientGoVersion(info))
-}
-
-func goVersion() string {
-	return fmt.Sprintf("%s %s/%s", runtime.Version(), runtime.GOOS, runtime.GOARCH)
-}
-
-func clientGoVersion(info *debug.BuildInfo) string {
-	version := "(unknown)"
-
-	for _, dep := range info.Deps {
-		if dep.Path == clientGoPath {
-			version = dep.Version
-		}
-	}
-
-	return fmt.Sprintf("%s %s", clientGoPath, version)
+	k.FatalIfErrorf(k.Run())
 }

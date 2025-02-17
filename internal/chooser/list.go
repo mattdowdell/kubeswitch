@@ -27,9 +27,9 @@ var (
 	inactiveDot = list.DefaultStyles().InactivePaginationDot.Foreground(textColor).String()
 )
 
-func newList(title string, items []string) list.Model {
+func newList(title string, items []string, current string) list.Model {
 	//nolint:mnd // layout sizes
-	l := list.New(newItems(items), newDelegate(), 20 /*width*/, 15 /*height*/)
+	l := list.New(newItems(items, current), newDelegate(), 20 /*width*/, 15 /*height*/)
 
 	l.SetShowStatusBar(false)
 	l.SetFilteringEnabled(true)

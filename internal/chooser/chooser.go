@@ -12,9 +12,9 @@ type Chooser struct {
 }
 
 // ...
-func New(title string, items []string) *Chooser {
+func New(title string, items []string, current string) *Chooser {
 	return &Chooser{
-		list: newList(title, items),
+		list: newList(title, items, current),
 	}
 }
 

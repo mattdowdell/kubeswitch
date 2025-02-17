@@ -5,14 +5,20 @@ import (
 )
 
 // ...
-type item string
+type item struct {
+	value   string
+	current bool
+}
 
 // ...
-func newItems(values []string) []list.Item {
+func newItems(values []string, current string) []list.Item {
 	items := make([]list.Item, 0, len(values))
 
 	for _, v := range values {
-		items = append(items, item(v))
+		items = append(items, item{
+			value:   v,
+			current: isCurrent(current, v),
+		})
 	}
 
 	return items
@@ -20,10 +26,22 @@ func newItems(values []string) []list.Item {
 
 // ...
 func (i item) String() string {
-	return string(i)
+	return i.value
 }
 
 // ...
 func (i item) FilterValue() string {
 	return i.String()
+}
+
+func isCurrent(a, b string) bool {
+	if a == b {
+		return true
+	}
+
+	if (a == "" && b == "default") || (a == "default" && b == "") {
+		return true
+	}
+
+	return false
 }
