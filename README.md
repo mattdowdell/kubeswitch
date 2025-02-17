@@ -13,7 +13,7 @@ go install github.com/mattdowdell/kubeswitch@latest
 Pre-built binaries for various OS/arch combinations can be downloaded from
 [Releases].
 
-[releases]: (https://github.com/mattdowdell/kubeswitch/releases)
+[releases]: https://github.com/mattdowdell/kubeswitch/releases
 
 ## Usage
 
