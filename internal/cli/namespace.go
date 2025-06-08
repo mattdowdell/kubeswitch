@@ -24,10 +24,17 @@ type Namespace struct {
 }
 
 // ...
+func (*Namespace) Help() string {
+	return ""
+}
+
+// ...
 func (n *Namespace) Run(ctx context.Context) error {
 	logger := logging.New(n.Verbose)
 
-	conf, err := kube.LoadConfig(n.Config)
+	access := kube.ConfigAccess(n.Config)
+
+	conf, err := access.GetStartingConfig()
 	if err != nil {
 		return err
 	}
@@ -42,7 +49,7 @@ func (n *Namespace) Run(ctx context.Context) error {
 		return nil
 	}
 
-	if err := kube.SaveConfig(conf, n.Config); err != nil {
+	if err := kube.UpdateConfig(access, conf); err != nil {
 		return err
 	}
 

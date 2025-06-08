@@ -16,10 +16,17 @@ type Switch struct {
 }
 
 // ...
+func (*Switch) Help() string {
+	return ""
+}
+
+// ...
 func (s *Switch) Run(ctx context.Context) error {
 	logger := logging.New(s.Verbose)
 
-	conf, err := kube.LoadConfig(s.Config)
+	access := kube.ConfigAccess(s.Config)
+
+	conf, err := access.GetStartingConfig()
 	if err != nil {
 		return err
 	}
@@ -39,7 +46,7 @@ func (s *Switch) Run(ctx context.Context) error {
 		return nil
 	}
 
-	if err := kube.SaveConfig(conf, s.Config); err != nil {
+	if err := kube.UpdateConfig(access, conf); err != nil {
 		return err
 	}
 
