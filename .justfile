@@ -4,6 +4,9 @@
 default:
     @just --list
 
+# Run the checks, lint and unit recipes.
+all: checks lint unit
+
 # Run all automated code modifications.
 checks: tidy vendor fmt
 
