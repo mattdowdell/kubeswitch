@@ -29,7 +29,7 @@ func (*Context) Help() string {
 // ...
 func (c *Context) Run() error {
 	logger := logging.New(c.Verbose)
-	access := kube.ConfigAccess(c.Config)
+	access := kube.NewAccess(c.Config)
 
 	conf, err := access.GetStartingConfig()
 	if err != nil {

@@ -23,7 +23,7 @@ func (*Switch) Help() string {
 // ...
 func (s *Switch) Run(ctx context.Context) error {
 	logger := logging.New(s.Verbose)
-	access := kube.ConfigAccess(s.Config)
+	access := kube.NewAccess(s.Config)
 
 	conf, err := access.GetStartingConfig()
 	if err != nil {

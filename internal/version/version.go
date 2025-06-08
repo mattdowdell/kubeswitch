@@ -12,9 +12,7 @@ const (
 )
 
 // Non-allocating compile-time check for interface compliance.
-var (
-	_ fmt.Stringer = (*Version)(nil)
-)
+var _ fmt.Stringer = (*Version)(nil)
 
 // Version provides a version string for the CLI.
 type Version struct {
@@ -38,9 +36,14 @@ func New() (*Version, error) {
 		return nil, errors.New("failed to read buildinfo")
 	}
 
+	return NewFromInfo(info), nil
+}
+
+// ...
+func NewFromInfo(info *debug.BuildInfo) *Version {
 	return &Version{
 		info: info,
-	}, nil
+	}
 }
 
 // String returns the string representation of the version.
