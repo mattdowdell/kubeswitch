@@ -31,7 +31,6 @@ func (*Namespace) Help() string {
 // ...
 func (n *Namespace) Run(ctx context.Context) error {
 	logger := logging.New(n.Verbose)
-
 	access := kube.ConfigAccess(n.Config)
 
 	conf, err := access.GetStartingConfig()
