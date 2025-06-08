@@ -9,6 +9,7 @@ import (
 func ConfigAccess(path string) clientcmd.ConfigAccess {
 	return &clientcmd.PathOptions{
 		ExplicitFileFlag: path,
+		LoadingRules: clientcmd.NewDefaultClientConfigLoadingRules(),
 	}
 }
 
