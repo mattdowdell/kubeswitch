@@ -39,7 +39,7 @@ func New() (*Version, error) {
 	return NewFromInfo(info), nil
 }
 
-// ...
+// NewFromInfo creates a new Version instance from the given build info.
 func NewFromInfo(info *debug.BuildInfo) *Version {
 	return &Version{
 		info: info,
