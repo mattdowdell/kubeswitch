@@ -30,12 +30,12 @@ func NewAccess(path string) *Access {
 // ...
 func (a *Access) GetDefaultFilename() string {
 	for _, path := range a.Files {
-		if _, err := os.Stat(path); err != nil {
+		if _, err := os.Stat(path); err == nil {
 			return path
 		}
 	}
 
-	return clientcmd.RecommendedHomeFile
+	return ""
 }
 
 // ...
