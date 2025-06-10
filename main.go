@@ -4,9 +4,9 @@ import (
 	"context"
 	"os"
 	"os/signal"
-	"path/filepath"
 
 	"github.com/alecthomas/kong"
+	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/mattdowdell/kubeswitch/internal/cli"
 	"github.com/mattdowdell/kubeswitch/internal/version"
@@ -20,7 +20,7 @@ func main() {
 		&cli.CLI{},
 		kong.Description("Switch between kube contexts and namespaces."),
 		kong.Vars{
-			"kubeconfig": filepath.Join(os.Getenv("HOME"), ".kube", "config"),
+			"kubeconfig": clientcmd.RecommendedHomeFile,
 			"version":    version.Must().String(),
 		},
 		kong.BindTo(ctx, (*context.Context)(nil)),

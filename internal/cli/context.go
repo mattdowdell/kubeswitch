@@ -22,10 +22,16 @@ type Context struct {
 }
 
 // ...
+func (*Context) Help() string {
+	return ""
+}
+
+// ...
 func (c *Context) Run() error {
 	logger := logging.New(c.Verbose)
+	access := kube.NewAccess(c.Config)
 
-	conf, err := kube.LoadConfig(c.Config)
+	conf, err := access.GetStartingConfig()
 	if err != nil {
 		return err
 	}
@@ -40,7 +46,7 @@ func (c *Context) Run() error {
 		return nil
 	}
 
-	if err := kube.SaveConfig(conf, c.Config); err != nil {
+	if err := kube.UpdateConfig(access, conf); err != nil {
 		return err
 	}
 

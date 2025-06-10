@@ -11,17 +11,15 @@ const (
 	clientGoPath = "k8s.io/client-go"
 )
 
-// ...
-var (
-	_ fmt.Stringer = (*Version)(nil)
-)
+// Non-allocating compile-time check for interface compliance.
+var _ fmt.Stringer = (*Version)(nil)
 
-// ...
+// Version provides a version string for the CLI.
 type Version struct {
 	info *debug.BuildInfo
 }
 
-// ...
+// Must creates a new Version instance, panicking if any errors occur.
 func Must() *Version {
 	version, err := New()
 	if err != nil {
@@ -31,19 +29,24 @@ func Must() *Version {
 	return version
 }
 
-// ...
+// New creates a new Version instance.
 func New() (*Version, error) {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
 		return nil, errors.New("failed to read buildinfo")
 	}
 
-	return &Version{
-		info: info,
-	}, nil
+	return NewFromInfo(info), nil
 }
 
-// ...
+// NewFromInfo creates a new Version instance from the given build info.
+func NewFromInfo(info *debug.BuildInfo) *Version {
+	return &Version{
+		info: info,
+	}
+}
+
+// String returns the string representation of the version.
 func (v *Version) String() string {
 	return fmt.Sprintf(
 		"%s (%s) (%s)",
@@ -53,17 +56,17 @@ func (v *Version) String() string {
 	)
 }
 
-// ...
+// Version returns the CLI version.
 func (v *Version) Version() string {
 	return v.info.Main.Version
 }
 
-// ...
+// GoVersion return the current Go version alongside the OS and architecture.
 func (v *Version) GoVersion() string {
 	return fmt.Sprintf("%s %s/%s", runtime.Version(), runtime.GOOS, runtime.GOARCH)
 }
 
-// ...
+// ClientGoVersion returns the used version of "k8s.io/client-go".
 func (v *Version) ClientGoVersion() string {
 	version := "(unknown)"
 

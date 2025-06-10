@@ -1,16 +1,17 @@
 package kube
 
 import (
+	"fmt"
+
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/tools/clientcmd/api"
 )
 
-// ...
-func LoadConfig(path string) (*api.Config, error) {
-	return clientcmd.LoadFromFile(path)
-}
+// UpdateConfig persists an updated configuration to the original files.
+func UpdateConfig(access clientcmd.ConfigAccess, conf *api.Config) error {
+	if err := clientcmd.ModifyConfig(access, *conf, true /*relativizePaths*/); err != nil {
+		return fmt.Errorf("failed to persist update: %w", err)
+	}
 
-// ...
-func SaveConfig(conf *api.Config, path string) error {
-	return clientcmd.WriteToFile(*conf, path)
+	return nil
 }
