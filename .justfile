@@ -59,6 +59,11 @@ lint-fix:
 # Run the Go unit tests.
 [group('tests')]
 unit:
-    go test -count=1 -cover -coverprofile=unit.out ./...
+    go test -count=1 -cover -coverprofile=unit.out ./internal/...
     @echo "Total coverage: `go tool cover -func=unit.out | tail -n 1 | awk '{print $3}'`"
     go tool cover -html unit.out -o unit.html
+
+# Run the Go functional tests.
+[group('tests')]
+functional:
+    go test -count=1 ./tests/functional/
