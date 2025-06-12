@@ -1,0 +1,8 @@
+# Set a context and namespace with none currently selected,
+# When the KUBECONFIG env var contains a single file.
+
+env KUBECONFIG=TODO
+
+exec kubeswitch switch --context CONTEXT --namespace NAMESPACE
+
+# TODO: diff kubeconfig with expected
