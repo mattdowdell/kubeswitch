@@ -16,16 +16,30 @@ import (
 	"github.com/mattdowdell/kubeswitch/internal/logging"
 )
 
-// ...
+// Namespace provides the ability to switch the namespace for the current context within a kube
+// config file.
 type Namespace struct {
-	Config    string `short:"k" name:"kubeconfig" env:"KUBECONFIG" default:"${kubeconfig}" help:"The kubeconfig file to use (env: ${env})."`
+	Common
+
 	Namespace string `arg:"" optional:""  help:"The namespace to switch to."`
-	Verbose   int    `short:"v" type:"counter" help:"Increase the log verbosity."`
 }
 
-// ...
+// Help outputs the extended help for the command.
 func (*Namespace) Help() string {
-	return ""
+	return `A new namespace can either be selected interactively from the available choices, or
+using a pre-selected value.
+
+This command lists namespaces from the Kubernetes API for interactive selection and validation. As a
+result, a valid kubeconfig with access to namespaces is required.
+
+Examples:
+	# Pre-select the namespace
+	kubeswitch ns NAMESPACE
+	kubeswitch namespace NAMESPACE
+
+	# Interactively select the namespace
+	kubeswitch ns
+	kubeswitch namespace`
 }
 
 // ...

@@ -7,17 +7,35 @@ import (
 	"github.com/mattdowdell/kubeswitch/internal/logging"
 )
 
-// ...
+// Switch provides the ability to switch the current context and namespace within a kube config
+// file.
 type Switch struct {
-	Config    string `short:"k" name:"kubeconfig" env:"KUBECONFIG" default:"${kubeconfig}" help:"The kubeconfig file to use (env: ${env})."`
+	Common
+
 	Context   string `short:"c" help:"The context to switch to."`
 	Namespace string `short:"n" help:"The namespace to switch to."`
-	Verbose   int    `short:"v" type:"counter" help:"Increase the log verbosity."`
 }
 
-// ...
+// Help outputs the extended help for the command.
 func (*Switch) Help() string {
-	return ""
+	return `A new context and namespace can either be selected interactively from the available
+choices, or using pre-selected values.
+
+This command lists namespaces from the Kubernetes API for interactive selection and validation. As a
+result, a valid kubeconfig with access to namespaces is required.
+
+Examples:
+	# Pre-select all values
+	kubeswitch sw -c CONTEXT -n NAMESPACE
+	kubeswitch switch --context CONTEXT --namespace NAMESPACE
+
+	# Interactively select all values
+	kubeswitch sw
+	kubeswitch switch
+
+	# Mixture of pre-selected and interactive selected values
+	kubeswitch switch --context CONTEXT
+	kubeswitch switch --namespace NAMESPACE`
 }
 
 // ...
