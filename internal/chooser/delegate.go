@@ -44,12 +44,12 @@ func (*delegate) Update(_ tea.Msg, _ *list.Model) tea.Cmd {
 //
 //nolint:gocritic // (hugeParam) required interface defined elsewhere
 func (*delegate) Render(writer io.Writer, model list.Model, index int, item list.Item) {
-	i, ok := item.(fmt.Stringer)
+	i, ok := item.(interface{ Value() string })
 	if !ok {
 		return
 	}
 
-	str := fmt.Sprintf("%d. %s", index+1, i.String())
+	str := i.Value()
 
 	fn := itemStyle.Render
 	if index == model.Index() {

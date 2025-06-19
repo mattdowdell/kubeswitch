@@ -1,6 +1,8 @@
 package chooser
 
 import (
+	"strings"
+
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 )
@@ -23,7 +25,7 @@ func (c *Chooser) Choice() (string, bool) {
 		return "", false
 	}
 
-	return c.choice, true
+	return strings.TrimSuffix(c.choice, " *"), true
 }
 
 // ...

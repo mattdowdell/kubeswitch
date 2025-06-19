@@ -14,16 +14,26 @@ import (
 	"github.com/mattdowdell/kubeswitch/internal/logging"
 )
 
-// ...
+// Context provides the ability to switch the current context within a kube config file.
 type Context struct {
-	Config  string `short:"k" name:"kubeconfig" env:"KUBECONFIG" default:"${kubeconfig}" help:"The kubeconfig file to use (env: ${env})."`
+	Common
+
 	Context string `arg:"" optional:"" help:"The context to switch to."`
-	Verbose int    `short:"v" type:"counter" help:"Increase the log verbosity."`
 }
 
-// ...
+// Help outputs the extended help for the command.
 func (*Context) Help() string {
-	return ""
+	return `A new context can either be selected interactively from the available choices, or using
+a pre-selected value.
+
+Examples:
+	# Pre-select a context
+	kubeswitch ctx CONTEXT
+	kubeswitch context CONTEXT
+
+	# Interactively select a context
+	kubeswitch ctx
+	kubeswitch context`
 }
 
 // ...

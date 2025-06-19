@@ -12,6 +12,10 @@ import (
 	"github.com/mattdowdell/kubeswitch/internal/version"
 )
 
+const (
+	helpMaxWidth = 100
+)
+
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
@@ -23,6 +27,9 @@ func main() {
 			"kubeconfig": clientcmd.RecommendedHomeFile,
 			"version":    version.Must().String(),
 		},
+		kong.ConfigureHelp(kong.HelpOptions{
+			WrapUpperBound: helpMaxWidth,
+		}),
 		kong.BindTo(ctx, (*context.Context)(nil)),
 	)
 
