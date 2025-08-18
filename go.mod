@@ -9,7 +9,7 @@ require (
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/charmbracelet/log v0.4.2
 	github.com/stretchr/testify v1.10.0
-	k8s.io/apimachinery v0.33.2
+	k8s.io/apimachinery v0.33.4
 	k8s.io/client-go v0.33.2
 )
 
