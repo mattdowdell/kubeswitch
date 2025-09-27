@@ -10,10 +10,12 @@ Kubeswitch can be installed via `go install`:
 go install github.com/mattdowdell/kubeswitch@latest
 ```
 
+<!--
 Pre-built binaries for various OS/arch combinations can be downloaded from
 [Releases].
 
 [releases]: https://github.com/mattdowdell/kubeswitch/releases
+-->
 
 ## Usage
 
@@ -22,8 +24,12 @@ kubeconfig file, e.g. `~/.kube/config.yaml`, while namespace are queried from
 the Kubernetes API using the selected context.
 
 ```sh
-# interactively select a context and namespace
+# print current context and namespace
 kubeswitch
+kubeswitch sh
+kubeswitch show
+
+# interactively select a context and namespace
 kubeswitch sw
 kubeswitch switch
 
