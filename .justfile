@@ -27,14 +27,7 @@ fmt: fmt-go fmt-just
 # Run the Go formatter.
 [group('formatters')]
 fmt-go:
-    gofumpt -l -w .
-    gci write \
-        --skip-vendor \
-        --skip-generated \
-        -s standard \
-        -s default \
-        -s localmodule \
-        .
+    golangci-lint fmt
 
 # Run the Justfile formatter.
 [group('formatters')]
