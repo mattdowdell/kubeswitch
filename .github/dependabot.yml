@@ -14,3 +14,7 @@ updates:
       timezone: "Europe/London"
     # lots of go dependencies, increase limit accordingly
     open-pull-requests-limit: 20
+    groups:
+      k8s-sdk:
+        patterns:
+          - "k8s.io/*"
