@@ -8,8 +8,8 @@ import (
 type CLI struct {
 	Show      Show      `cmd:"" aliases:"sh" default:"1" help:"Show current values."`
 	Switch    Switch    `cmd:"" aliases:"sw"  help:"Switch all values."`
-	Context   Context   `cmd:"" aliases:"ctx" help:"Switch the context only."`
-	Namespace Namespace `cmd:"" aliases:"ns" help:"Switch the namespace only."`
+	Context   Context   `cmd:"" aliases:"c,ctx" help:"Switch the context only."`
+	Namespace Namespace `cmd:"" aliases:"n,ns" help:"Switch the namespace only."`
 
 	Version kong.VersionFlag `short:"V" help:"Display the version."`
 }

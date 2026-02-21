@@ -34,10 +34,12 @@ result, a valid kubeconfig with access to namespaces is required.
 
 Examples:
 	# Pre-select the namespace
+	kubeswitch n NAMESPACE
 	kubeswitch ns NAMESPACE
 	kubeswitch namespace NAMESPACE
 
 	# Interactively select the namespace
+	kubeswitch n
 	kubeswitch ns
 	kubeswitch namespace`
 }
