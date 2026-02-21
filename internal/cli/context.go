@@ -28,10 +28,12 @@ a pre-selected value.
 
 Examples:
 	# Pre-select a context
+	kubeswitch c CONTEXT
 	kubeswitch ctx CONTEXT
 	kubeswitch context CONTEXT
 
 	# Interactively select a context
+	kubeswitch c
 	kubeswitch ctx
 	kubeswitch context`
 }
