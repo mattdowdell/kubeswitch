@@ -1,4 +1,4 @@
-package version_test
+package versioninfo_test
 
 import (
 	"runtime/debug"
@@ -6,12 +6,12 @@ import (
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/mattdowdell/kubeswitch/internal/version"
+	"github.com/mattdowdell/kubeswitch/internal/versioninfo"
 )
 
 func Test_Must(t *testing.T) {
 	assert.NotPanics(t, func() {
-		v := version.Must()
+		v := versioninfo.Must()
 		assert.NotNil(t, v)
 	})
 }
@@ -20,25 +20,25 @@ func Test_New(t *testing.T) {
 	// arrange
 
 	// act
-	v, err := version.New()
+	v, err := versioninfo.New()
 
 	// assert
 	assert.NotNil(t, v)
 	assert.NoError(t, err)
 }
 
-func Test_NewFromInfo(t *testing.T) {
+func Test_NewFromBuildInfo(t *testing.T) {
 	// arrange
 	info := &debug.BuildInfo{}
 
 	// act
-	v := version.NewFromInfo(info)
+	v := versioninfo.NewFromBuildInfo(info)
 
 	// assert
 	assert.NotNil(t, v)
 }
 
-func Test_Version_String(t *testing.T) {
+func Test_VersionInfo_String(t *testing.T) {
 	// arrange
 	info := &debug.BuildInfo{
 		Main: debug.Module{
@@ -52,7 +52,7 @@ func Test_Version_String(t *testing.T) {
 		},
 	}
 
-	v := version.NewFromInfo(info)
+	v := versioninfo.NewFromBuildInfo(info)
 
 	// act
 	got := v.String()
@@ -65,7 +65,7 @@ func Test_Version_String(t *testing.T) {
 	)
 }
 
-func Test_Version_Version(t *testing.T) {
+func Test_VersionInfo_Version(t *testing.T) {
 	// arrange
 	info := &debug.BuildInfo{
 		Main: debug.Module{
@@ -73,7 +73,7 @@ func Test_Version_Version(t *testing.T) {
 		},
 	}
 
-	v := version.NewFromInfo(info)
+	v := versioninfo.NewFromBuildInfo(info)
 
 	// act
 	got := v.Version()
@@ -82,10 +82,10 @@ func Test_Version_Version(t *testing.T) {
 	assert.Equal(t, "v0.0.1", got)
 }
 
-func Test_Version_GoVersion(t *testing.T) {
+func Test_VersionInfo_GoVersion(t *testing.T) {
 	// arrange
 	info := &debug.BuildInfo{}
-	v := version.NewFromInfo(info)
+	v := versioninfo.NewFromBuildInfo(info)
 
 	// act
 	got := v.GoVersion()
@@ -94,7 +94,7 @@ func Test_Version_GoVersion(t *testing.T) {
 	assert.Regexp(t, `^go1\.\d+\.\d+ \w+\/\w+$`, got)
 }
 
-func Test_Version_ClientGoVersion(t *testing.T) {
+func Test_VersionInfo_ClientGoVersion(t *testing.T) {
 	tests := map[string]struct {
 		have *debug.BuildInfo
 		want string
@@ -119,7 +119,7 @@ func Test_Version_ClientGoVersion(t *testing.T) {
 	for name, tt := range tests {
 		t.Run(name, func(t *testing.T) {
 			// arrange
-			v := version.NewFromInfo(tt.have)
+			v := versioninfo.NewFromBuildInfo(tt.have)
 
 			// act
 			got := v.ClientGoVersion()

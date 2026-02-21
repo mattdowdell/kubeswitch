@@ -1,4 +1,4 @@
-package version
+package versioninfo
 
 import (
 	"errors"
@@ -12,15 +12,15 @@ const (
 )
 
 // Non-allocating compile-time check for interface compliance.
-var _ fmt.Stringer = (*Version)(nil)
+var _ fmt.Stringer = (*VersionInfo)(nil)
 
-// Version provides a version string for the CLI.
-type Version struct {
+// VersionInfo provides a version string for the CLI.
+type VersionInfo struct {
 	info *debug.BuildInfo
 }
 
-// Must creates a new Version instance, panicking if any errors occur.
-func Must() *Version {
+// Must creates a new VersionInfo instance, panicking if any errors occur.
+func Must() *VersionInfo {
 	version, err := New()
 	if err != nil {
 		panic(err)
@@ -29,45 +29,45 @@ func Must() *Version {
 	return version
 }
 
-// New creates a new Version instance.
-func New() (*Version, error) {
+// New creates a new VersionInfo instance.
+func New() (*VersionInfo, error) {
 	info, ok := debug.ReadBuildInfo()
 	if !ok {
 		return nil, errors.New("failed to read buildinfo")
 	}
 
-	return NewFromInfo(info), nil
+	return NewFromBuildInfo(info), nil
 }
 
-// NewFromInfo creates a new Version instance from the given build info.
-func NewFromInfo(info *debug.BuildInfo) *Version {
-	return &Version{
+// NewFromBuildInfo creates a new VersionInfo instance from the given [runtime/debug.BuildInfo].
+func NewFromBuildInfo(info *debug.BuildInfo) *VersionInfo {
+	return &VersionInfo{
 		info: info,
 	}
 }
 
 // String returns the string representation of the version.
-func (v *Version) String() string {
+func (v *VersionInfo) String() string {
 	return fmt.Sprintf(
 		"%s (%s) (%s)",
-		v.info.Main.Version,
+		v.Version(),
 		v.GoVersion(),
 		v.ClientGoVersion(),
 	)
 }
 
 // Version returns the CLI version.
-func (v *Version) Version() string {
+func (v *VersionInfo) Version() string {
 	return v.info.Main.Version
 }
 
 // GoVersion return the current Go version alongside the OS and architecture.
-func (v *Version) GoVersion() string {
+func (v *VersionInfo) GoVersion() string {
 	return fmt.Sprintf("%s %s/%s", runtime.Version(), runtime.GOOS, runtime.GOARCH)
 }
 
 // ClientGoVersion returns the used version of "k8s.io/client-go".
-func (v *Version) ClientGoVersion() string {
+func (v *VersionInfo) ClientGoVersion() string {
 	version := "(unknown)"
 
 	for _, dep := range v.info.Deps {

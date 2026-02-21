@@ -9,7 +9,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 
 	"github.com/mattdowdell/kubeswitch/internal/cli"
-	"github.com/mattdowdell/kubeswitch/internal/version"
+	"github.com/mattdowdell/kubeswitch/internal/versioninfo"
 )
 
 const (
@@ -25,7 +25,7 @@ func main() {
 		kong.Description("Switch between kube contexts and namespaces."),
 		kong.Vars{
 			"kubeconfig": clientcmd.RecommendedHomeFile,
-			"version":    version.Must().String(),
+			"version":    versioninfo.Must().String(),
 		},
 		kong.ConfigureHelp(kong.HelpOptions{
 			WrapUpperBound: helpMaxWidth,
